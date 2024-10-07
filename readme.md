@@ -1,6 +1,9 @@
 # Arbitrum SDK Example
 ## Config Environment Variables
 ```bash
+# Install dependencies
+npm i
+
 # Create .env
 cp .env.sample .env
 
