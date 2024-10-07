@@ -9,7 +9,7 @@ dotenv.config();
 
 /**
  * 본 스크립트는 Parent -> Child Chain 간 `Native Bridge 입금`의 메시지를 파싱하는 example 코드입니다.
- * ts-node native-bridge/deposit.message.ts
+ * ts-node brdige-parse/native-deposit.ts
  */
 async function main() {
   registerCustomNetwork();

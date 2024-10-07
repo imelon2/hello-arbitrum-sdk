@@ -9,7 +9,7 @@ dotenv.config();
 
 /**
  * 본 스크립트는 Parent -> Child Chain 간 `Native Bridge 입금`의 메시지를 파싱하는 example 코드입니다.
- * ts-node token-bridge/withdraw.message.ts
+ * ts-node brdige-parse/native-withdraw.ts
  */
 async function main() {
   registerCustomNetwork();
@@ -20,9 +20,8 @@ async function main() {
   const childProvider = new ethers.providers.JsonRpcProvider(
     process.env.CHILD_CHAIN_URL
   );
-
   const depositTxHash =
-    "0x272bfa0d20a75e95c338f73d51129808e4f2c0cd84eb3a5a47780df08bf8dc85";
+    "0x93b71543c8f2c358d4402e13b9b7e91c89aa5824bd179c22479fbf1380bc21b2";
   const receipt = await childProvider.getTransactionReceipt(depositTxHash);
 
   // 부모체인의 입금 메시지 정보를 얻습니다.
@@ -62,6 +61,8 @@ async function main() {
     const l2ToL1TxMessage = l2ToL1TxMessages[i];
     const status = await l2ToL1TxMessage.status(childProvider);
 
+    const a = await l2ToL1TxMessage.getOutboxProof(childProvider)
+    
     switch (status) {
       case ChildToParentMessageStatus.CONFIRMED:
         console.log("  - status : CONFIRMED");

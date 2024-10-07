@@ -9,7 +9,7 @@ dotenv.config();
 
 /**
  * 본 스크립트는 Parent -> Child Chain 간 `Native Bridge 입금`의 메시지를 파싱하는 example 코드입니다.
- * ts-node token-bridge/deposit.message.ts
+ * ts-node brdige-parse/token-deposit.ts
  */
 async function main() {
   registerCustomNetwork();
@@ -21,14 +21,14 @@ async function main() {
   );
 
   const depositTxHash =
-    "0x0b445a3b1bb0443de77a43455404fa4c032b98761f7f9c900c23d7acc9c7dd1d";
+    "0xc7b06ddd46d59f4cdd4e956cfacd68744d41d9a1dcc4f99756647e496ead7184";
   const receipt = await parentProvider.getTransactionReceipt(depositTxHash);
 
   // 부모체인의 입금 메시지 정보를 얻습니다.
   const depositMessage = new ParentTransactionReceipt(receipt);
   const inboxEvent = depositMessage.getInboxMessageDeliveredEvents();
   const deliverdEvent = depositMessage.getMessageDeliveredEvents();
-  const tokenDepositEvent = depositMessage.getTokenDepositEvents();
+  const tokenDepositEvent = depositMessage.getTokenDepositEvents(); // ✅
 
   for (let i = 0; i < inboxEvent.length; i++) {
     const { data, messageNum } = inboxEvent[i];
