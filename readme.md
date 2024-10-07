@@ -4,7 +4,7 @@
 # Install dependencies
 npm i
 
-# Create .env
+# Create `.env`
 cp .env.sample .env
 
 # Enter Parent & Child Provider Info

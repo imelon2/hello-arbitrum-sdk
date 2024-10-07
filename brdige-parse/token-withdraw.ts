@@ -13,7 +13,7 @@ import { parseTypedLogs } from "@arbitrum/sdk/dist/lib/dataEntities/event";
 dotenv.config();
 
 /**
- * 본 스크립트는 Parent -> Child Chain 간 `Native Bridge 입금`의 메시지를 파싱하는 example 코드입니다.
+ * 본 스크립트는 Child -> Parent Chain 간 `Token Bridge 출금`의 메시지를 파싱하는 example 코드입니다.
  * ts-node brdige-parse/token-withdraw.ts
  */
 async function main() {

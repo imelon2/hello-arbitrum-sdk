@@ -8,6 +8,7 @@ dotenv.config();
 const MAX_EVENT_BLOCK = 43200;
 
 /**
+ * 본 스크립트는 Parent Chain의 Outbox.sol에서 발생한 Claim 메시지를 파싱하는 example 코드입니다.
  * @description if search event latest ~ 43200 block
  * ts-node brdige-parse/claim.message.ts
  *
