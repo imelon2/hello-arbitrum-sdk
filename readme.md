@@ -4,6 +4,9 @@
 # Install dependencies
 npm i
 
+# Run compile hardhat
+npx hardhat compile
+
 # Create `.env`
 cp .env.sample .env
 
