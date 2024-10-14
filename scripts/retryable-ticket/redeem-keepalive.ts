@@ -1,10 +1,10 @@
 import { ArbRetryableTx__factory } from '@arbitrum/sdk/dist/lib/abi/factories/ArbRetryableTx__factory';
-import { init } from '../common/\butils';
 import { ARB_RETRYABLE_TX_ADDRESS } from '@arbitrum/sdk/dist/lib/dataEntities/constants';
 import { getRetryableEscrowAddress } from './common';
 import { BigNumber } from 'ethers';
-import { logGapBalance, logGapTime } from '../common/logs';
+import { logGapBalance, logGapTime } from '../../common/logs';
 import { ChildTransactionReceipt, ParentTransactionReceipt } from '@arbitrum/sdk';
+import { init } from '../../common/\butils';
 
 /**
  * ts-node retryable-ticket/redeem-keepalive.ts

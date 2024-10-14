@@ -7,9 +7,9 @@ import {
 
 import { L2ArbitrumGateway__factory } from "@arbitrum/sdk/dist/lib/abi/factories/L2ArbitrumGateway__factory"
 import { ethers } from "ethers";
-import { registerCustomNetwork } from "../network/register";
 import dotenv from 'dotenv';
 import { parseTypedLogs } from "@arbitrum/sdk/dist/lib/dataEntities/event";
+import { registerCustomNetwork } from "../../network/register";
 dotenv.config();
 
 /**

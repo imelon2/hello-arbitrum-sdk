@@ -1,26 +1,32 @@
-import { Erc20Bridger, getArbitrumNetwork, ParentToChildMessageGasEstimator, ParentTransactionReceipt } from '@arbitrum/sdk';
+import {
+  Erc20Bridger,
+  getArbitrumNetwork,
+  ParentToChildMessageGasEstimator,
+  ParentToChildMessageStatus,
+  ParentTransactionReceipt,
+} from '@arbitrum/sdk';
 import { BigNumber, ethers } from 'ethers';
-import { ChildGreeter__factory } from '../build/types';
-import { registerCustomNetwork } from '../network/register';
+import { ChildGreeter__factory } from '../../build/types';
+import { registerCustomNetwork } from '../../network/register';
 import { ERC20Inbox__factory } from '@arbitrum/sdk/dist/lib/abi/factories/ERC20Inbox__factory';
 import { ERC20Bridge__factory } from '@arbitrum/sdk/dist/lib/abi/factories/ERC20Bridge__factory';
 import { ERC20__factory } from '@arbitrum/sdk/dist/lib/abi/factories/ERC20__factory';
 import { ParentToChildMessageNoGasParams } from '@arbitrum/sdk/dist/lib/message/ParentToChildMessageCreator';
-import { formatEther, hexDataLength, parseEther } from 'ethers/lib/utils';
-import { ansi, logDeliverdEvent, logGapBalance, logInboxMessageEvent, logRetrayableTicketResult, logRetryableTicketParams } from '../common/logs';
+import { hexDataLength, parseEther, parseUnits } from 'ethers/lib/utils';
+import { ansi, logGapBalance, logRetrayableTicketResult, logRetryableTicketParams } from '../../common/logs';
 import { getRetryableEscrowAddress, readContract } from './common';
-import { init } from '../common/\butils';
+import { init } from '../../common/utils';
 
 
 /**
- * ts-node retryable-ticket/create-ticket-contract-revert.ts
+ * ts-node retryable-ticket/create-ticket-contract-fail.ts
  */
 async function createTicket() {
   try {
     const {childProvider,parentProvider, parentSigner } = init()
-
+    
     registerCustomNetwork();
-    const { childGreeterAddr } = readContract();
+    const {childGreeterAddr} = readContract()
     const { ethBridge } = await getArbitrumNetwork(childProvider);
 
     /** If Child Network use ETH, should be use `Inbox__factory` */
@@ -38,40 +44,37 @@ async function createTicket() {
     }
 
     const IChildGreeter = ChildGreeter__factory.createInterface();
-    const calldataSuccess = IChildGreeter.encodeFunctionData('callForRevert', [true]);
+    const message = `Hi Parent Chain, this message come form child chain by ${parentSigner.address} directly, but It sould be Fail WTF ??!!`;
+    const calldata = IChildGreeter.encodeFunctionData('knockknock', [message]);
 
     const estimator = new ParentToChildMessageGasEstimator(childProvider);
 
-    const gasPriceBid = await estimator.estimateMaxFeePerGas(); // current gas price + 500%
+    // const gasPriceBid = await estimator.estimateMaxFeePerGas(); // current gas price + 500%
+    const gasPriceBid = parseUnits("0.01",9); // current gas price + 500%
     const submissionFee = await estimator.estimateSubmissionFee(
       parentProvider,
       gasPriceBid,
-      hexDataLength(calldataSuccess) // calldata length
+      hexDataLength(calldata) // calldata length
     ); // submissionFee + 300%
 
-    const l2CallValue = parseEther('0.1');
+    const l2CallValue = parseEther('0.1'); // if payable function set value
     const retryableEstimateParam: ParentToChildMessageNoGasParams = {
       from: parentSigner.address,
       to: childGreeterAddr,
       l2CallValue: l2CallValue,
       excessFeeRefundAddress: '0x0000000000000000000000000000000000000011', // for identify
       callValueRefundAddress: '0x0000000000000000000000000000000000000022', // for identify
-      data: calldataSuccess,
+      data: calldata,
     };
 
-    const beforeExcessDka = await childProvider.getBalance(retryableEstimateParam.excessFeeRefundAddress);
-    const beforeRefundDka = await childProvider.getBalance(retryableEstimateParam.callValueRefundAddress);
     const beforeDka = await childProvider.getBalance(parentSigner.address);
 
-    const gasLimit = await estimator.estimateRetryableTicketGasLimit(retryableEstimateParam)
-    // const gasLimit = (await estimator.estimateRetryableTicketGasLimit(retryableEstimateParam)).mul(2);
+    const gasLimit = await estimator.estimateRetryableTicketGasLimit(retryableEstimateParam);
+    // const gasLimit = BigNumber.from(4372)
+    retryableEstimateParam.l2CallValue = l2CallValue;
     const callValue = submissionFee.add(gasPriceBid.mul(gasLimit)).add(l2CallValue);
 
-    const calldataRevert = IChildGreeter.encodeFunctionData('callForRevert', [false]);
-    retryableEstimateParam.l2CallValue = l2CallValue;
-    retryableEstimateParam.data = calldataRevert;
-
-    logRetryableTicketParams(retryableEstimateParam, submissionFee, gasLimit, gasPriceBid, callValue);
+    logRetryableTicketParams(retryableEstimateParam,submissionFee,gasLimit,gasPriceBid,callValue)
 
     // Create and Send createRetryable ticket to Child Chain
     const res = await inbox.createRetryableTicket(
@@ -83,7 +86,7 @@ async function createTicket() {
       gasLimit,
       gasPriceBid,
       callValue,
-      calldataRevert,
+      calldata,
       {} // override
     );
 
@@ -94,6 +97,7 @@ async function createTicket() {
 
     console.log(`${ansi.BrightWhite}# inbox.createRetryableTicket Tx Result${ansi.reset}`);
     console.log(`- transaction hash : ${receipt.transactionHash}\n`);
+
     // logInboxMessageEvent(inboxEvent)
     // logDeliverdEvent(deliverdEvent)
 
@@ -107,22 +111,17 @@ async function createTicket() {
       const receipt = await logRetrayableTicketResult(childDepositMessages[i]);
 
       const escrowAddress = getRetryableEscrowAddress(receipt.transactionHash);
-      const afterExcessDka = await childProvider.getBalance(retryableEstimateParam.excessFeeRefundAddress);
-      const afterRefundDka = await childProvider.getBalance(retryableEstimateParam.callValueRefundAddress);
       const afterDka = await childProvider.getBalance(parentSigner.address);
       const escrowDka = await childProvider.getBalance(escrowAddress!);
 
       console.log();
       logGapBalance('Escrow', escrowAddress, BigNumber.from(0), escrowDka, 'DKA');
       logGapBalance('Sender', parentSigner.address, beforeDka, afterDka, 'DKA');
-      logGapBalance('ExcessFeeRefund', retryableEstimateParam.excessFeeRefundAddress, beforeExcessDka, afterExcessDka, 'DKA');
-      logGapBalance('CallValueRefund', retryableEstimateParam.callValueRefundAddress, beforeRefundDka, afterRefundDka, 'DKA');
     }
   } catch (error) {
     console.log(error);
   }
 }
-
 
 (async () => {
   await createTicket();

@@ -3,7 +3,7 @@ import {
   ChildTransactionReceipt,
 } from "@arbitrum/sdk";
 import { ethers } from "ethers";
-import { registerCustomNetwork } from "../network/register";
+import { registerCustomNetwork } from "../../network/register";
 import dotenv from 'dotenv';
 dotenv.config();
 

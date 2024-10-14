@@ -3,7 +3,7 @@ import { MessageDeliveredEvent } from '@arbitrum/sdk/dist/lib/abi/Bridge';
 import { ParentToChildMessageNoGasParams } from '@arbitrum/sdk/dist/lib/message/ParentToChildMessageCreator';
 import { BigNumber, ethers } from 'ethers';
 import { formatEther } from 'ethers/lib/utils';
-import { getRetryableEscrowAddress } from '../retryable-ticket/common';
+import { getRetryableEscrowAddress } from '../scripts/retryable-ticket/common';
 
 export const ansi = {
   reset: '\x1b[0m',

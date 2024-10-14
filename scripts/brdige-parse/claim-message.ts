@@ -1,19 +1,19 @@
 import { Outbox__factory } from "@arbitrum/sdk/dist/lib/abi/factories/Outbox__factory";
-import { registerCustomNetwork } from "../network/register";
+import { registerCustomNetwork } from "../../network/register";
 import { ethers } from "ethers";
 import dotenv from "dotenv";
-import { getArbitrumNetwork } from "@arbitrum/sdk";
 dotenv.config();
+import { getArbitrumNetwork } from "@arbitrum/sdk";
 
 const MAX_EVENT_BLOCK = 43200;
 
 /**
  * 본 스크립트는 Parent Chain의 Outbox.sol에서 발생한 Claim 메시지를 파싱하는 example 코드입니다.
  * @description if search event latest ~ 43200 block
- * ts-node brdige-parse/claim.message.ts
+ * ts-node brdige-parse/claim-message.ts
  *
  * @description if run subscribe event with websocket
- * ts-node brdige-parse/claim.message.ts --ws
+ * ts-node brdige-parse/claim-message.ts --ws
  */
 async function main() {
   registerCustomNetwork();

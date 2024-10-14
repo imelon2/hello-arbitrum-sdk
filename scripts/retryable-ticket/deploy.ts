@@ -1,11 +1,11 @@
 import { ethers } from 'ethers';
-import { registerCustomNetwork } from '../network/register';
+import { registerCustomNetwork } from '../../network/register';
 import dotenv from 'dotenv';
-import { ChildGreeter__factory } from '../build/types';
+import { ChildGreeter__factory } from '../../build/types';
 import { getArbitrumNetwork } from '@arbitrum/sdk';
 import fs from 'fs';
 import path from 'path';
-import { init } from '../common/\butils';
+import { init } from '../../common/utils';
 dotenv.config();
 
 /**
