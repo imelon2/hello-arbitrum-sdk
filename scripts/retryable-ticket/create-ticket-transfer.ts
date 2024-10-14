@@ -11,10 +11,10 @@ import { ERC20__factory } from '@arbitrum/sdk/dist/lib/abi/factories/ERC20__fact
 import { ParentToChildMessageNoGasParams } from '@arbitrum/sdk/dist/lib/message/ParentToChildMessageCreator';
 import { hexDataLength, parseEther } from 'ethers/lib/utils';
 import { ansi, logGapBalance, logRetrayableTicketResult, logRetryableTicketParams } from '../../common/logs';
-import { init } from '../../common/utils';
+import { init } from '../../common/utils';
 
 /**
- * ts-node retryable-ticket/create-ticket-transfer.ts
+ * ts-node scripts/retryable-ticket/create-ticket-transfer.ts
  */
 async function createTicket() {
   try {
@@ -47,7 +47,7 @@ async function createTicket() {
       hexDataLength('0x') // calldata length
     ); // submissionFee + 300%
 
-    const recipient = '0x07C9BF6399012d3DFe6Bb878733D4D6426F9dFE0';
+    const recipient = '0xD23196C9b8F4fd5295Af7A79eDAAae25C83B5932';
     const l2CallValue = parseEther('0.01');
     const retryableEstimateParam: ParentToChildMessageNoGasParams = {
       from: parentSigner.address,
@@ -59,6 +59,7 @@ async function createTicket() {
     };
 
     const beforeDka = await childProvider.getBalance(parentSigner.address);
+    const beforeRecipent = await childProvider.getBalance(recipient);
 
     const gasLimit = await estimator.estimateRetryableTicketGasLimit(retryableEstimateParam);
     retryableEstimateParam.l2CallValue = l2CallValue;
@@ -82,8 +83,8 @@ async function createTicket() {
 
     const receipt = await res.wait();
     const depositMessage = new ParentTransactionReceipt(receipt);
-    const inboxEvent = depositMessage.getInboxMessageDeliveredEvents();
-    const deliverdEvent = depositMessage.getMessageDeliveredEvents();
+    // const inboxEvent = depositMessage.getInboxMessageDeliveredEvents();
+    // const deliverdEvent = depositMessage.getMessageDeliveredEvents();
 
     console.log(`${ansi.BrightWhite}# inbox.createRetryableTicket Tx Result${ansi.reset}`);
     console.log(`- transaction hash : ${receipt.transactionHash}\n`);
@@ -100,8 +101,10 @@ async function createTicket() {
     for (let i = 0; i < childDepositMessages.length; i++) {
       const receipt = await logRetrayableTicketResult(childDepositMessages[i]);
       const afterDka = await childProvider.getBalance(parentSigner.address);
-      
+      const afterRecipent = await childProvider.getBalance(recipient);
+
       logGapBalance('Sender', parentSigner.address, beforeDka, afterDka, 'DKA');
+      logGapBalance('To', recipient, beforeRecipent, afterRecipent, 'DKA');
     }
   } catch (error) {
     console.log(error);

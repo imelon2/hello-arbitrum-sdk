@@ -5,7 +5,7 @@ import { ChildGreeter__factory } from '../../build/types';
 import { getArbitrumNetwork } from '@arbitrum/sdk';
 import fs from 'fs';
 import path from 'path';
-import { init } from '../../common/utils';
+import { init } from '../../common/utils';
 dotenv.config();
 
 /**

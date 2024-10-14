@@ -9,11 +9,11 @@ import { ParentToChildMessageNoGasParams } from '@arbitrum/sdk/dist/lib/message/
 import { formatEther, hexDataLength, parseEther } from 'ethers/lib/utils';
 import { ansi, logDeliverdEvent, logGapBalance, logInboxMessageEvent, logRetrayableTicketResult, logRetryableTicketParams } from '../../common/logs';
 import { getRetryableEscrowAddress, readContract } from './common';
-import { init } from '../../common/utils';
+import { init } from '../../common/utils';
 
 
 /**
- * ts-node retryable-ticket/create-ticket-contract-revert.ts
+ * ts-node scripts/retryable-ticket/create-ticket-contract-revert.ts
  */
 async function createTicket() {
   try {
@@ -60,7 +60,6 @@ async function createTicket() {
     };
 
     const beforeExcessDka = await childProvider.getBalance(retryableEstimateParam.excessFeeRefundAddress);
-    const beforeRefundDka = await childProvider.getBalance(retryableEstimateParam.callValueRefundAddress);
     const beforeDka = await childProvider.getBalance(parentSigner.address);
 
     const gasLimit = await estimator.estimateRetryableTicketGasLimit(retryableEstimateParam)
@@ -94,8 +93,8 @@ async function createTicket() {
 
     console.log(`${ansi.BrightWhite}# inbox.createRetryableTicket Tx Result${ansi.reset}`);
     console.log(`- transaction hash : ${receipt.transactionHash}\n`);
-    // logInboxMessageEvent(inboxEvent)
-    // logDeliverdEvent(deliverdEvent)
+    logInboxMessageEvent(inboxEvent)
+    logDeliverdEvent(deliverdEvent)
 
     // get child chain info
     const childDepositMessages = await depositMessage.getParentToChildMessages(childProvider);
@@ -108,16 +107,15 @@ async function createTicket() {
 
       const escrowAddress = getRetryableEscrowAddress(receipt.transactionHash);
       const afterExcessDka = await childProvider.getBalance(retryableEstimateParam.excessFeeRefundAddress);
-      const afterRefundDka = await childProvider.getBalance(retryableEstimateParam.callValueRefundAddress);
       const afterDka = await childProvider.getBalance(parentSigner.address);
       const escrowDka = await childProvider.getBalance(escrowAddress!);
 
       console.log();
       logGapBalance('Escrow', escrowAddress, BigNumber.from(0), escrowDka, 'DKA');
-      logGapBalance('Sender', parentSigner.address, beforeDka, afterDka, 'DKA');
       logGapBalance('ExcessFeeRefund', retryableEstimateParam.excessFeeRefundAddress, beforeExcessDka, afterExcessDka, 'DKA');
-      logGapBalance('CallValueRefund', retryableEstimateParam.callValueRefundAddress, beforeRefundDka, afterRefundDka, 'DKA');
+      logGapBalance('Sender', parentSigner.address, beforeDka, afterDka, 'DKA');
     }
+    
   } catch (error) {
     console.log(error);
   }

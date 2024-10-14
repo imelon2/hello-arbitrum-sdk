@@ -55,101 +55,110 @@ export const logInboxMessageEvent = (
     data: string;
   }[]
 ) => {
-	for (let i = 0; i < e.length; i++) {
-		const { data, messageNum } = e[i];
-		console.log(`${ansi.BrightWhite}# Inbox Message Event ${i}${ansi.reset}`);
-		console.log(`- messageNum : ${messageNum}`);
-		console.log(`- data : ${data}\n`);
-	  }
+  for (let i = 0; i < e.length; i++) {
+    const { data, messageNum } = e[i];
+    console.log(`${ansi.BrightWhite}# Inbox Message Event ${i}${ansi.reset}`);
+    console.log(`- messageNum : ${messageNum}`);
+    console.log(`- data : ${data}\n`);
+  }
 };
 
-export const logDeliverdEvent = (e:EventArgs<MessageDeliveredEvent>[]) => {
-    for (let i = 0; i < e.length; i++) {
-		const { messageDataHash, messageIndex, beforeInboxAcc, baseFeeL1, inbox, kind, sender, timestamp } = e[i];
-		console.log(`${ansi.BrightWhite}# Deliverd Event ${i}${ansi.reset}`);
-		console.log(`- messageIndex    : ${messageIndex}`);
-		console.log(`- beforeInboxAcc  : ${beforeInboxAcc}`);
-		console.log(`- inbox           : ${inbox}`);
-		console.log(`- kind            : ${kind}`);
-		console.log(`- sender          : ${sender}`);
-		console.log(`- messageDataHash : ${messageDataHash}`);
-		console.log(`- baseFeeL1       : ${baseFeeL1}`);
-		console.log(`- timestamp       : ${timestamp}\n`);
-	  }
-}
+export const logDeliverdEvent = (e: EventArgs<MessageDeliveredEvent>[]) => {
+  for (let i = 0; i < e.length; i++) {
+    const { messageDataHash, messageIndex, beforeInboxAcc, baseFeeL1, inbox, kind, sender, timestamp } = e[i];
+    console.log(`${ansi.BrightWhite}# Deliverd Event ${i}${ansi.reset}`);
+    console.log(`- messageIndex    : ${messageIndex}`);
+    console.log(`- beforeInboxAcc  : ${beforeInboxAcc}`);
+    console.log(`- inbox           : ${inbox}`);
+    console.log(`- kind            : ${kind}`);
+    console.log(`- sender          : ${sender}`);
+    console.log(`- messageDataHash : ${messageDataHash}`);
+    console.log(`- baseFeeL1       : ${baseFeeL1}`);
+    console.log(`- timestamp       : ${timestamp}\n`);
+  }
+};
 
-export const logRetrayableTicketResult = async (childDepositMessage : ParentToChildMessageReader,i?:number) => {
-		const retryableCreationReceipt = await childDepositMessage.getRetryableCreationReceipt();
+export const logTransactionGap = (transactionReceipt: ethers.providers.TransactionReceipt) => {
+  console.log(`${ansi.BrightWhite}# executed transaction receipt Result ${ansi.reset}`);
+  console.log(`- tx hash                         : ${transactionReceipt?.transactionHash}`);
+  console.log(`- gasUsed                          : ${transactionReceipt.gasUsed}`);
+  console.log(`- gasPrice                         : ${transactionReceipt.effectiveGasPrice}`);
+  console.log(`- transaction fee                  : ${formatEther(transactionReceipt.gasUsed.mul(transactionReceipt.effectiveGasPrice))}`);
+  console.log('');
+};
 
-		if(!retryableCreationReceipt) {
-			throw new Error("No Retryable Receipt")
-		}
+export const logRetrayableTicketResult = async (childDepositMessage: ParentToChildMessageReader, i?: number) => {
+  const retryableCreationReceipt = await childDepositMessage.getRetryableCreationReceipt();
 
-		console.log(`${ansi.BrightWhite}# executed retrayable ticket Result ${i} on Child Chain ${ansi.reset}`);
-		console.log(`- create retrayable ticket tx hash : ${retryableCreationReceipt?.transactionHash}`);
-		console.log(`- gasUsed                          : ${retryableCreationReceipt.gasUsed}`);
-		console.log(`- gasPrice                         : ${retryableCreationReceipt.effectiveGasPrice}`);
-		console.log(`- transaction fee                  : ${formatEther(retryableCreationReceipt.gasUsed.mul(retryableCreationReceipt.effectiveGasPrice))}`);
-		console.log('');
-		
-		const reddem = await childDepositMessage.getSuccessfulRedeem();
-		
-		switch (reddem.status) {
-		  case ParentToChildMessageStatus.NOT_YET_CREATED:
-			console.log('- status : NOT_YET_CREATED');
-			break;
-		  case ParentToChildMessageStatus.CREATION_FAILED:
-			console.log('- status : CREATION_FAILED');
-			break;
-		  case ParentToChildMessageStatus.FUNDS_DEPOSITED_ON_CHILD:
-			const autoRedeem = await childDepositMessage.getAutoRedeemAttempt();
-			if(!autoRedeem) {
-				console.log(`${ansi.BrightWhite}# Fail Auto Redeem${ansi.reset}`);
-				console.log('- status                           : FUNDS_DEPOSITED_ON_CHILD');
-			} else {
-				console.log(`- redeem tx hash                   : ${autoRedeem.transactionHash}`);
-				console.log('- status                           : FUNDS_DEPOSITED_ON_CHILD');
-				console.log(`- gasUsed                          : ${autoRedeem.gasUsed}`);
-				console.log(`- gasPrice                         : ${autoRedeem.effectiveGasPrice}`);
-				console.log(`- transaction fee                  : ${formatEther(autoRedeem.gasUsed.mul(autoRedeem.effectiveGasPrice))}`);
-			}
-			
-			break;
-		  case ParentToChildMessageStatus.REDEEMED:
-			console.log(`- redeem tx hash                   : ${reddem.childTxReceipt.transactionHash}`);
-			console.log('- status                           : REDEEMED');
-			console.log(`- gasUsed                          : ${reddem.childTxReceipt.gasUsed}`);
-			console.log(`- gasPrice                         : ${reddem.childTxReceipt.effectiveGasPrice}`);
-			console.log(`- transaction fee                  : ${formatEther(reddem.childTxReceipt.gasUsed.mul(reddem.childTxReceipt.effectiveGasPrice))}`);
-			break;
-		  case ParentToChildMessageStatus.EXPIRED:
-			console.log('- status : EXPIRED');
-			break;
-		}
-		console.log("========================================================================");
-		console.log();
-		
-		
+  if (!retryableCreationReceipt) {
+    throw new Error('No Retryable Receipt');
+  }
 
-		return retryableCreationReceipt
-}
+  console.log(`${ansi.BrightWhite}# executed retrayable ticket Result ${i} on Child Chain ${ansi.reset}`);
+  console.log(`- create retrayable ticket tx hash : ${retryableCreationReceipt?.transactionHash}`);
+  console.log(`- gasUsed                          : ${retryableCreationReceipt.gasUsed}`);
+  console.log(`- gasPrice                         : ${retryableCreationReceipt.effectiveGasPrice}`);
+  console.log(
+    `- transaction fee                  : ${formatEther(retryableCreationReceipt.gasUsed.mul(retryableCreationReceipt.effectiveGasPrice))}`
+  );
+  console.log('');
 
-export const logGapBalance = (name:string,addr:string,before:BigNumber,after:BigNumber,symbol:string) => {
-	console.log(`  ${name} address  : ${addr}`);
-	console.log(`  Before Balance   : ${formatEther(before)} ${symbol}`);
-	console.log(`  After  Balance   : ${formatEther(after)} ${symbol}`);
-	console.log(`  --------------------------------------------`);
-	console.log(`  Gap              : ${formatEther(after.sub(before))} ${symbol}`);
-	console.log();
-}
+  const reddem = await childDepositMessage.getSuccessfulRedeem();
 
-export const logGapTime = (before:Date,after:Date) => {
-	console.log(`  Before time ${before.toLocaleString()}`);
-	console.log(`  After  time ${after.toLocaleString()}`);
-	console.log('  ---------------------------------------');
-	let timeDifference = after.getTime() - before.getTime();
-	let diffInMinutes = Math.floor(timeDifference / (1000 * 60));
-	let diffInSeconds = Math.floor((timeDifference % (1000 * 60)) / 1000);
-	console.log(`                             ⏰ ${diffInMinutes}분 ${diffInSeconds}초`);
-	console.log();
-}
+  switch (reddem.status) {
+    case ParentToChildMessageStatus.NOT_YET_CREATED:
+      console.log('- status : NOT_YET_CREATED');
+      break;
+    case ParentToChildMessageStatus.CREATION_FAILED:
+      console.log('- status : CREATION_FAILED');
+      break;
+    case ParentToChildMessageStatus.FUNDS_DEPOSITED_ON_CHILD:
+      const autoRedeem = await childDepositMessage.getAutoRedeemAttempt();
+      if (!autoRedeem) {
+        console.log(`${ansi.BrightWhite}# Fail Auto Redeem${ansi.reset}`);
+        console.log('- status                           : FUNDS_DEPOSITED_ON_CHILD');
+      } else {
+        console.log(`- redeem tx hash                   : ${autoRedeem.transactionHash}`);
+        console.log('- status                           : FUNDS_DEPOSITED_ON_CHILD');
+        console.log(`- gasUsed                          : ${autoRedeem.gasUsed}`);
+        console.log(`- gasPrice                         : ${autoRedeem.effectiveGasPrice}`);
+        console.log(`- transaction fee                  : ${formatEther(autoRedeem.gasUsed.mul(autoRedeem.effectiveGasPrice))}`);
+      }
+
+      break;
+    case ParentToChildMessageStatus.REDEEMED:
+      console.log(`- redeem tx hash                   : ${reddem.childTxReceipt.transactionHash}`);
+      console.log('- status                           : REDEEMED');
+      console.log(`- gasUsed                          : ${reddem.childTxReceipt.gasUsed}`);
+      console.log(`- gasPrice                         : ${reddem.childTxReceipt.effectiveGasPrice}`);
+      console.log(`- transaction fee                  : ${formatEther(reddem.childTxReceipt.gasUsed.mul(reddem.childTxReceipt.effectiveGasPrice))}`);
+      break;
+    case ParentToChildMessageStatus.EXPIRED:
+      console.log('- status : EXPIRED');
+      break;
+  }
+  console.log('========================================================================');
+  console.log();
+
+  return retryableCreationReceipt;
+};
+
+export const logGapBalance = (name: string, addr: string, before: BigNumber, after: BigNumber, symbol: string) => {
+  console.log(`  ${name} address   : ${addr}`);
+  console.log(`  Before Balance   : ${formatEther(before)} ${symbol}`);
+  console.log(`  After  Balance   : ${formatEther(after)} ${symbol}`);
+  console.log(`  --------------------------------------------`);
+  console.log(`  Gap              : ${formatEther(after.sub(before))} ${symbol}`);
+  console.log();
+};
+
+export const logGapTime = (before: Date, after: Date) => {
+  console.log(`  Before time ${before.toLocaleString()}`);
+  console.log(`  After  time ${after.toLocaleString()}`);
+  console.log('  ---------------------------------------');
+  let timeDifference = after.getTime() - before.getTime();
+  let diffInMinutes = Math.floor(timeDifference / (1000 * 60));
+  let diffInSeconds = Math.floor((timeDifference % (1000 * 60)) / 1000);
+  console.log(`                             ⏰ ${diffInMinutes}분 ${diffInSeconds}초`);
+  console.log();
+};

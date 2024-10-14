@@ -1,5 +1,5 @@
 import { ArbRetryableTx__factory } from '@arbitrum/sdk/dist/lib/abi/factories/ArbRetryableTx__factory';
-import { init } from '../../common/utils';
+import { init } from '../../common/utils';
 import { ARB_RETRYABLE_TX_ADDRESS } from '@arbitrum/sdk/dist/lib/dataEntities/constants';
 import { getRetryableEscrowAddress } from './common';
 import { BigNumber } from 'ethers';
@@ -7,12 +7,12 @@ import { logGapBalance } from '../../common/logs';
 import { ChildTransactionReceipt, ParentTransactionReceipt } from '@arbitrum/sdk';
 
 /**
- * ts-node retryable-ticket/cancel-ticket.ts
+ * ts-node scripts/retryable-ticket/cancel-ticket.ts
  */
 async function redeem() {
   const { childSigner, childProvider,parentProvider,parentSigner } = init();
 
-  const retryableId = '0x5c362a03e647011690363f507c59e8e0a2098b5ee1382acb9a93561f00a1adfe';
+  const retryableId = '0xe6f88bb5370a3895a11897fb627dad3c94ea4c5c13a5b780708a79b5a218afcf';
   const arbRetryableTx = ArbRetryableTx__factory.connect(ARB_RETRYABLE_TX_ADDRESS, childSigner);
   
   const callValueRefundAddress = await arbRetryableTx.getBeneficiary(retryableId);

@@ -15,11 +15,11 @@ import { ParentToChildMessageNoGasParams } from '@arbitrum/sdk/dist/lib/message/
 import { hexDataLength, parseEther } from 'ethers/lib/utils';
 import { ansi, logGapBalance, logRetrayableTicketResult, logRetryableTicketParams } from '../../common/logs';
 import { getRetryableEscrowAddress, readContract } from './common';
-import { init } from '../../common/utils';
+import { init } from '../../common/utils';
 
 
 /**
- * ts-node retryable-ticket/create-ticket-contract.ts
+ * ts-node scripts/retryable-ticket/create-ticket-contract.ts
  */
 async function createTicket() {
   try {
@@ -67,6 +67,7 @@ async function createTicket() {
     };
 
     const beforeDka = await childProvider.getBalance(parentSigner.address);
+    const beforeRecipent = await childProvider.getBalance(retryableEstimateParam.to);
 
     const gasLimit = await estimator.estimateRetryableTicketGasLimit(retryableEstimateParam);
     retryableEstimateParam.l2CallValue = l2CallValue;
@@ -106,15 +107,13 @@ async function createTicket() {
     await childDepositMessages[0].waitForStatus();
 
     for (let i = 0; i < childDepositMessages.length; i++) {
-      const receipt = await logRetrayableTicketResult(childDepositMessages[i]);
-
-      const escrowAddress = getRetryableEscrowAddress(receipt.transactionHash);
+      await logRetrayableTicketResult(childDepositMessages[i]);
       const afterDka = await childProvider.getBalance(parentSigner.address);
-      const escrowDka = await childProvider.getBalance(escrowAddress!);
+      const afterRecipent = await childProvider.getBalance(retryableEstimateParam.to);
 
       console.log();
-      logGapBalance('Escrow', escrowAddress, BigNumber.from(0), escrowDka, 'DKA');
       logGapBalance('Sender', parentSigner.address, beforeDka, afterDka, 'DKA');
+      logGapBalance('To', retryableEstimateParam.to, beforeRecipent, afterRecipent, 'DKA');
     }
   } catch (error) {
     console.log(error);

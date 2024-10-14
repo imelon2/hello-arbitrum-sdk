@@ -1,0 +1,21 @@
+{
+ "childGreeterAddr": "0x455b4aa4e67cE0Dd307842db9f8c25b4d367E236",
+ "gap": {
+  "escrow": {
+   "address": "0x3f2d2E4A6c2689F7c26c8175786a5d7ffc9e46ee",
+   "balance": "10000000000000000"
+  },
+  "sender": {
+   "address": "0x07C9BF6399012d3DFe6Bb878733D4D6426F9dFE0",
+   "balance": "4994505571537890100000000"
+  },
+  "feeRefender": {
+   "address": "0x0000000000000000000000000000000000000011",
+   "balance": "327717300000000"
+  },
+  "valueRefender": {
+   "address": "0x0000000000000000000000000000000000000022",
+   "balance": "1440000000000000000"
+  }
+ }
+}
