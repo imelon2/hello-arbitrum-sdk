@@ -1,0 +1,317 @@
+[
+  {
+    "tx:": "0x8d948bcfbf4da5c0fe1b588a37dda12635e7387567af5198ca3f8d8f7aee2285",
+    "gap": {
+      "escrow": {
+        "address": "0x6aA8a5Fc9C4F1e712b7a9c3fDe0a296Cb53fd7c0",
+        "balance": "10000000000000000"
+      },
+      "sender": {
+        "address": "0x6ACF3a756f081366Fb1a342Cda49c967712F708D",
+        "balance": "4994500001885655400000000"
+      },
+      "feeRefender": {
+        "address": "0x0000000000000000000000000000000000000011",
+        "balance": "180000000000"
+      },
+      "valueRefender": {
+        "address": "0x0000000000000000000000000000000000000AAA",
+        "balance": "0"
+      }
+    }
+  },
+  {
+    "tx:": "0x2397911f5e96a7426e61840301d48b4e53c8dad6c9693d063e29ec704ba6d00e",
+    "gap": {
+      "escrow": {
+        "address": "0x23ae443246C8BBb0C021694300aE6Ba13C2C822f",
+        "balance": "10000000000000000"
+      },
+      "sender": {
+        "address": "0x6ACF3a756f081366Fb1a342Cda49c967712F708D",
+        "balance": "4994500001885655400000000"
+      },
+      "feeRefender": {
+        "address": "0x0000000000000000000000000000000000000011",
+        "balance": "240000000000"
+      },
+      "valueRefender": {
+        "address": "0x0000000000000000000000000000000000000BBB",
+        "balance": "0"
+      }
+    }
+  },
+  {
+    "tx:": "0x6fc8c3825326f30fc7f236cbc5736a4b6919a2b0df589f40bae062308d520e9b",
+    "gap": {
+      "escrow": {
+        "address": "0x7Ba1c005655189AA7910c9E0231A72635Ba7F969",
+        "balance": "10000000000000000"
+      },
+      "sender": {
+        "address": "0x6ACF3a756f081366Fb1a342Cda49c967712F708D",
+        "balance": "4994500001885655400000000"
+      },
+      "feeRefender": {
+        "address": "0x0000000000000000000000000000000000000011",
+        "balance": "300000000000"
+      },
+      "valueRefender": {
+        "address": "0x0000000000000000000000000000000000000CCC",
+        "balance": "0"
+      }
+    }
+  },
+  {
+    "tx:": "0x2161a163b564b07640379bcb8be216cc19f2d557eb745a4470891159d38c561c",
+    "gap": {
+      "escrow": {
+        "address": "0xA05a0488Be2B48c5BAAF4534E3C573efeFA135Ed",
+        "balance": "10000000000000000"
+      },
+      "sender": {
+        "address": "0x6ACF3a756f081366Fb1a342Cda49c967712F708D",
+        "balance": "4994500001885655400000000"
+      },
+      "feeRefender": {
+        "address": "0x0000000000000000000000000000000000000011",
+        "balance": "360000000000"
+      },
+      "valueRefender": {
+        "address": "0x0000000000000000000000000000000000000DDD",
+        "balance": "0"
+      }
+    }
+  },
+  {
+    "tx:": "0x03b41b6fffefc27a6af72e548a0c77e9adc84d9a380050f3854f6bce7440f11e",
+    "gap": {
+      "escrow": {
+        "address": "0xb683935490109af4b548DB2dB49632935432391c",
+        "balance": "10000000000000000"
+      },
+      "sender": {
+        "address": "0x6ACF3a756f081366Fb1a342Cda49c967712F708D",
+        "balance": "4994500001885655400000000"
+      },
+      "feeRefender": {
+        "address": "0x0000000000000000000000000000000000000011",
+        "balance": "420000000000"
+      },
+      "valueRefender": {
+        "address": "0x0000000000000000000000000000000000000EEE",
+        "balance": "0"
+      }
+    }
+  },
+  {
+    "tx:": "0xb5a145b3efb59cac27c638d56447ba660d1e293a7719d36950a6898e426e0625",
+    "gap": {
+      "escrow": {
+        "address": "0x6EC4a20ce4bD2A8d08BeAc79407019259673BaeA",
+        "balance": "10000000000000000"
+      },
+      "sender": {
+        "address": "0x6ACF3a756f081366Fb1a342Cda49c967712F708D",
+        "balance": "4994500001885655400000000"
+      },
+      "feeRefender": {
+        "address": "0x0000000000000000000000000000000000000011",
+        "balance": "480000000000"
+      },
+      "valueRefender": {
+        "address": "0x0000000000000000000000000000000000000FFF",
+        "balance": "0"
+      }
+    }
+  },
+  {
+    "tx:": "0xa810a64c7c383edd2488229b69d318727181e3e310ac6c4b23baf4e2b35b2fdf",
+    "gap": {
+      "escrow": {
+        "address": "0x75E938537ae4CF74a921F807ad022Ca6C40ecF48",
+        "balance": "10000000000000000"
+      },
+      "sender": {
+        "address": "0x6ACF3a756f081366Fb1a342Cda49c967712F708D",
+        "balance": "4994500001885655400000000"
+      },
+      "feeRefender": {
+        "address": "0x0000000000000000000000000000000000000011",
+        "balance": "540000000000"
+      },
+      "valueRefender": {
+        "address": "0x0000000000000000000000000000000000000111",
+        "balance": "0"
+      }
+    }
+  },
+  {
+    "tx:": "0x334064e44d1206203aa9f470315c8992a36f3f44b646f9aaf89d7bae4ee29165",
+    "gap": {
+      "escrow": {
+        "address": "0xcbb1280ef4386F7e1521D28D8557660239A7E34B",
+        "balance": "10000000000000000"
+      },
+      "sender": {
+        "address": "0x6ACF3a756f081366Fb1a342Cda49c967712F708D",
+        "balance": "4994500001885655400000000"
+      },
+      "feeRefender": {
+        "address": "0x0000000000000000000000000000000000000011",
+        "balance": "600000000000"
+      },
+      "valueRefender": {
+        "address": "0x0000000000000000000000000000000000000222",
+        "balance": "0"
+      }
+    }
+  },
+  {
+    "tx:": "0x8009d44a9ac5135a06f22f2c5eb75ce4195661c0b6350fa7c19f35997b8d147c",
+    "gap": {
+      "escrow": {
+        "address": "0x5274b46997a10410454C5Cf5Ad4151bBD505A4dD",
+        "balance": "10000000000000000"
+      },
+      "sender": {
+        "address": "0x6ACF3a756f081366Fb1a342Cda49c967712F708D",
+        "balance": "4994500001885655400000000"
+      },
+      "feeRefender": {
+        "address": "0x0000000000000000000000000000000000000011",
+        "balance": "660000000000"
+      },
+      "valueRefender": {
+        "address": "0x0000000000000000000000000000000000000333",
+        "balance": "0"
+      }
+    }
+  },
+  {
+    "tx:": "0x7bf093cc601aa8c27ef5b42cc38fb14575729410bb98e6dc569b8f920eb45ecb",
+    "gap": {
+      "escrow": {
+        "address": "0x90c1337f285Ea61C6f3E47748b1a24ac2306FbE2",
+        "balance": "10000000000000000"
+      },
+      "sender": {
+        "address": "0x6ACF3a756f081366Fb1a342Cda49c967712F708D",
+        "balance": "4994500001885655400000000"
+      },
+      "feeRefender": {
+        "address": "0x0000000000000000000000000000000000000011",
+        "balance": "720000000000"
+      },
+      "valueRefender": {
+        "address": "0x0000000000000000000000000000000000000444",
+        "balance": "0"
+      }
+    }
+  },
+  {
+    "tx:": "0xb178af60a574b9727a5897b04eb92a344878f8ace9283f2179807bbd3bf21d96",
+    "gap": {
+      "escrow": {
+        "address": "0xF75770C9f18d0239FB389F6bb39cB23DC1Cd75fA",
+        "balance": "10000000000000000"
+      },
+      "sender": {
+        "address": "0x6ACF3a756f081366Fb1a342Cda49c967712F708D",
+        "balance": "4994500001885655400000000"
+      },
+      "feeRefender": {
+        "address": "0x0000000000000000000000000000000000000011",
+        "balance": "780000000000"
+      },
+      "valueRefender": {
+        "address": "0x0000000000000000000000000000000000000555",
+        "balance": "0"
+      }
+    }
+  },
+  {
+    "tx:": "0x49eaffa6e9479688501ffae38339984f22e569bac36eeb3b293deac267df6314",
+    "gap": {
+      "escrow": {
+        "address": "0xf4D720c86fC2CBF921A0018621ee79BdDca62d6b",
+        "balance": "10000000000000000"
+      },
+      "sender": {
+        "address": "0x6ACF3a756f081366Fb1a342Cda49c967712F708D",
+        "balance": "4994500001885655400000000"
+      },
+      "feeRefender": {
+        "address": "0x0000000000000000000000000000000000000011",
+        "balance": "840000000000"
+      },
+      "valueRefender": {
+        "address": "0x0000000000000000000000000000000000000666",
+        "balance": "0"
+      }
+    }
+  },
+  {
+    "tx:": "0x8df16f015d259d0041c81ea80ffabbd1127f85887ad49f7ebbb6f4ced372394e",
+    "gap": {
+      "escrow": {
+        "address": "0x8354f0069E9EE967B78d70011880Bc97eA751525",
+        "balance": "10000000000000000"
+      },
+      "sender": {
+        "address": "0x6ACF3a756f081366Fb1a342Cda49c967712F708D",
+        "balance": "4994500001885655400000000"
+      },
+      "feeRefender": {
+        "address": "0x0000000000000000000000000000000000000011",
+        "balance": "900000000000"
+      },
+      "valueRefender": {
+        "address": "0x0000000000000000000000000000000000000777",
+        "balance": "0"
+      }
+    }
+  },
+  {
+    "tx:": "0x9acdd02c9e064694f2f691939162f795afa45bfeca66a4c4e29140f8e12ef5d7",
+    "gap": {
+      "escrow": {
+        "address": "0xE429A33E95f5Fb4203aEA09f1cc35762029eC69f",
+        "balance": "10000000000000000"
+      },
+      "sender": {
+        "address": "0x6ACF3a756f081366Fb1a342Cda49c967712F708D",
+        "balance": "4994500001885655400000000"
+      },
+      "feeRefender": {
+        "address": "0x0000000000000000000000000000000000000011",
+        "balance": "960000000000"
+      },
+      "valueRefender": {
+        "address": "0x0000000000000000000000000000000000000888",
+        "balance": "0"
+      }
+    }
+  },
+  {
+    "tx:": "0xedb26e5b3159240906b3a2e2eda90917c2e2924d5080bffba036c2002414a789",
+    "gap": {
+      "escrow": {
+        "address": "0x7555032e7d0dC296462497361B2dE38d485A9916",
+        "balance": "10000000000000000"
+      },
+      "sender": {
+        "address": "0x6ACF3a756f081366Fb1a342Cda49c967712F708D",
+        "balance": "4994500001885655400000000"
+      },
+      "feeRefender": {
+        "address": "0x0000000000000000000000000000000000000011",
+        "balance": "1020000000000"
+      },
+      "valueRefender": {
+        "address": "0x0000000000000000000000000000000000000999",
+        "balance": "0"
+      }
+    }
+  }
+]

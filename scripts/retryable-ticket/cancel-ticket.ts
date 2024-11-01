@@ -3,7 +3,7 @@ import { init } from '../../common/utils';
 import { ARB_RETRYABLE_TX_ADDRESS } from '@arbitrum/sdk/dist/lib/dataEntities/constants';
 import { getRetryableEscrowAddress } from './common';
 import { BigNumber } from 'ethers';
-import { logGapBalance } from '../../common/logs';
+import { logGapBalance, logTransactionGap } from '../../common/logs';
 import { ChildTransactionReceipt, ParentTransactionReceipt } from '@arbitrum/sdk';
 
 /**
@@ -12,7 +12,7 @@ import { ChildTransactionReceipt, ParentTransactionReceipt } from '@arbitrum/sdk
 async function redeem() {
   const { childSigner, childProvider,parentProvider,parentSigner } = init();
 
-  const retryableId = '0xe6f88bb5370a3895a11897fb627dad3c94ea4c5c13a5b780708a79b5a218afcf';
+  const retryableId = '0xdc11238fdceaa604736e304a65bd9601144407aa43478b1352b02f1844e8f4ba';
   const arbRetryableTx = ArbRetryableTx__factory.connect(ARB_RETRYABLE_TX_ADDRESS, childSigner);
   
   const callValueRefundAddress = await arbRetryableTx.getBeneficiary(retryableId);
@@ -24,11 +24,7 @@ async function redeem() {
   const redeemRes = await arbRetryableTx.cancel(retryableId, { gasLimit: 580000 });
   
   const receipt = await redeemRes.wait();
-  console.log(redeemRes);
-  console.log();
-  console.log(receipt);
-  console.log();
-  
+  logTransactionGap(receipt)
   const afterRefundKda = await childProvider.getBalance(callValueRefundAddress);
   const afterEscrow = await childProvider.getBalance(escrowAddress);
 

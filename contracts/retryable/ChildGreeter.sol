@@ -1,13 +1,10 @@
 // SPDX-License-Identifier: Apache-2.0
 pragma solidity ^0.8.20;
-import "@arbitrum/nitro-contracts/src/precompiles/ArbSys.sol";
 
 
 contract ChildGreeter {
     address public caller;
-    string public message;
-
-    ArbSys constant arbsys = ArbSys(address(100));
+    string public message = "init";
 
     event L2ToL1TxCreated(uint256 indexed withdrawalId);
 

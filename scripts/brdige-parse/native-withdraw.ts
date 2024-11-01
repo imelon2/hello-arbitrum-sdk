@@ -9,10 +9,10 @@ dotenv.config();
 
 /**
  * 본 스크립트는 Child -> Parent Chain 간 `Native Bridge 출금`의 메시지를 파싱하는 example 코드입니다.
- * ts-node brdige-parse/native-withdraw.ts
+ * ts-node scripts/brdige-parse/native-withdraw.ts
  */
 async function main() {
-  registerCustomNetwork();
+  await registerCustomNetwork();
 
   const parentProvider = new ethers.providers.JsonRpcProvider(
     process.env.PARENT_CHAIN_URL
@@ -20,9 +20,9 @@ async function main() {
   const childProvider = new ethers.providers.JsonRpcProvider(
     process.env.CHILD_CHAIN_URL
   );
-  const depositTxHash =
-    "0x93b71543c8f2c358d4402e13b9b7e91c89aa5824bd179c22479fbf1380bc21b2";
-  const receipt = await childProvider.getTransactionReceipt(depositTxHash);
+  const withdrawTxHash =
+    "0xc4dda25cf324322612605ce9c81c1e7e699d3e47b36e63d38f27b4b618439220";
+  const receipt = await childProvider.getTransactionReceipt(withdrawTxHash);
 
   // 부모체인의 입금 메시지 정보를 얻습니다.
   const withdrawtMessage = new ChildTransactionReceipt(receipt);

@@ -10,13 +10,13 @@ const MAX_EVENT_BLOCK = 43200;
 /**
  * 본 스크립트는 Parent Chain의 Outbox.sol에서 발생한 Claim 메시지를 파싱하는 example 코드입니다.
  * @description if search event latest ~ 43200 block
- * ts-node brdige-parse/claim-message.ts
+ * ts-node scripts/brdige-parse/claim-message.ts
  *
  * @description if run subscribe event with websocket
- * ts-node brdige-parse/claim-message.ts --ws
+ * ts-node scripts/brdige-parse/claim-message.ts --ws
  */
 async function main() {
-  registerCustomNetwork();
+  await registerCustomNetwork();
 
   const parentProvider = new ethers.providers.JsonRpcProvider(
     process.env.PARENT_CHAIN_URL
@@ -53,7 +53,7 @@ async function main() {
 }
 
 async function OutboxEvent() {
-  registerCustomNetwork();
+  await registerCustomNetwork();
 
   const childProvider = new ethers.providers.JsonRpcProvider(
     process.env.CHILD_CHAIN_URL

@@ -9,7 +9,7 @@ dotenv.config();
  * ts-node scripts/brdige-parse/claim-status.ts
  */
 async function main() {
-  registerCustomNetwork();
+  await registerCustomNetwork();
 
   const parentProvider = new ethers.providers.JsonRpcProvider(process.env.PARENT_CHAIN_URL);
 

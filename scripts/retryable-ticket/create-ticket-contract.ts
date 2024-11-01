@@ -5,7 +5,7 @@ import {
   ParentToChildMessageStatus,
   ParentTransactionReceipt,
 } from '@arbitrum/sdk';
-import { BigNumber, ethers } from 'ethers';
+import { BigNumber, ContractTransaction, ethers } from 'ethers';
 import { ChildGreeter__factory } from '../../build/types';
 import { registerCustomNetwork } from '../../network/register';
 import { ERC20Inbox__factory } from '@arbitrum/sdk/dist/lib/abi/factories/ERC20Inbox__factory';
@@ -14,27 +14,39 @@ import { ERC20__factory } from '@arbitrum/sdk/dist/lib/abi/factories/ERC20__fact
 import { ParentToChildMessageNoGasParams } from '@arbitrum/sdk/dist/lib/message/ParentToChildMessageCreator';
 import { hexDataLength, parseEther } from 'ethers/lib/utils';
 import { ansi, logGapBalance, logRetrayableTicketResult, logRetryableTicketParams } from '../../common/logs';
-import { getRetryableEscrowAddress, readContract } from './common';
+import { getRetryableEscrowAddress, isERC20Inbox, readContract } from './common';
 import { init } from '../../common/utils';
+import { ERC20Inbox } from '@arbitrum/sdk/dist/lib/abi/ERC20Inbox';
+import { Inbox } from '@arbitrum/sdk/dist/lib/abi/Inbox';
+import { Inbox__factory } from '@arbitrum/sdk/dist/lib/abi/factories/Inbox__factory';
 
 
 /**
  * ts-node scripts/retryable-ticket/create-ticket-contract.ts
  */
 async function createTicket() {
+  const {childProvider,parentProvider, parentSigner } = init()
+  
+  await registerCustomNetwork();
+  const {childGreeterAddr} = readContract()
+  
+  const { ethBridge } = await getArbitrumNetwork(childProvider);
+  let inbox : ERC20Inbox | Inbox
+  
+  /** If Child Network use ETH, should be use `Inbox__factory` */
+  inbox = ERC20Inbox__factory.connect(ethBridge.inbox, parentSigner);
+  const bridge = ERC20Bridge__factory.connect(ethBridge.bridge, parentSigner);
+
+  let nativeTokenAddr;
   try {
-    const {childProvider,parentProvider, parentSigner } = init()
-    
-    registerCustomNetwork();
-    const {childGreeterAddr} = readContract()
-    const { ethBridge } = await getArbitrumNetwork(childProvider);
-
-    /** If Child Network use ETH, should be use `Inbox__factory` */
-    const inbox = ERC20Inbox__factory.connect(ethBridge.inbox, parentSigner);
-    const bridge = ERC20Bridge__factory.connect(ethBridge.bridge, parentSigner);
-    const nativeTokenAddr = await bridge.nativeToken();
+    nativeTokenAddr = await bridge.nativeToken();
+  } catch (error) {
+    nativeTokenAddr = undefined
+  }
+  
+  if(nativeTokenAddr) {
     const nativeToken = ERC20__factory.connect(nativeTokenAddr, parentSigner);
-
+    
     /** Child Network use Gas Token, should be approve */
     const allowance = await nativeToken.allowance(parentSigner.address, inbox.address);
     if (allowance.toString() === '0') {
@@ -42,11 +54,15 @@ async function createTicket() {
       const receipt = await res.wait();
       console.log(`Approve max balance to inbox : ${receipt.transactionHash}`);
     }
-
-    const IChildGreeter = ChildGreeter__factory.createInterface();
-    const message = `Hi Parent Chain, this message come form child chain by ${parentSigner.address} directly 55!!`;
-    const calldata = IChildGreeter.encodeFunctionData('knockknock', [message]);
-
+  } else {
+    inbox = Inbox__factory.connect(ethBridge.inbox, parentSigner);
+  }
+  
+  const IChildGreeter = ChildGreeter__factory.createInterface();
+  const message = `Hi Parent Chain, this message come form child chain by ${parentSigner.address} directly !!`;
+  const calldata = IChildGreeter.encodeFunctionData('knockknock', [message]);
+  
+  try {
     const estimator = new ParentToChildMessageGasEstimator(childProvider);
 
     const gasPriceBid = await estimator.estimateMaxFeePerGas(); // current gas price + 500%
@@ -76,23 +92,38 @@ async function createTicket() {
     logRetryableTicketParams(retryableEstimateParam,submissionFee,gasLimit,gasPriceBid,callValue)
 
     // Create and Send createRetryable ticket to Child Chain
-    const res = await inbox.createRetryableTicket(
-      retryableEstimateParam.to,
-      retryableEstimateParam.l2CallValue,
-      submissionFee,
-      retryableEstimateParam.excessFeeRefundAddress,
-      retryableEstimateParam.callValueRefundAddress,
-      gasLimit,
-      gasPriceBid,
-      callValue,
-      calldata,
-      {} // override
-    );
+    let res: ContractTransaction
+    if(isERC20Inbox(inbox)) {
+      res = await inbox.createRetryableTicket(
+        retryableEstimateParam.to,
+        retryableEstimateParam.l2CallValue,
+        submissionFee,
+        retryableEstimateParam.excessFeeRefundAddress,
+        retryableEstimateParam.callValueRefundAddress,
+        gasLimit,
+        gasPriceBid,
+        callValue,
+        calldata,
+        {} // override
+      );
+    } else {
+      res = await inbox.createRetryableTicket(
+        retryableEstimateParam.to,
+        retryableEstimateParam.l2CallValue,
+        submissionFee,
+        retryableEstimateParam.excessFeeRefundAddress,
+        retryableEstimateParam.callValueRefundAddress,
+        gasLimit,
+        gasPriceBid,
+        calldata,
+        {value:callValue} // override
+      );
+    }
 
     const receipt = await res.wait();
     const depositMessage = new ParentTransactionReceipt(receipt);
-    const inboxEvent = depositMessage.getInboxMessageDeliveredEvents();
-    const deliverdEvent = depositMessage.getMessageDeliveredEvents();
+    // const inboxEvent = depositMessage.getInboxMessageDeliveredEvents();
+    // const deliverdEvent = depositMessage.getMessageDeliveredEvents();
 
     console.log(`${ansi.BrightWhite}# inbox.createRetryableTicket Tx Result${ansi.reset}`);
     console.log(`- transaction hash : ${receipt.transactionHash}\n`);

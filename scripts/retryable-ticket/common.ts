@@ -1,3 +1,4 @@
+import { ERC20Inbox } from '@arbitrum/sdk/dist/lib/abi/ERC20Inbox';
 import { BigNumber, ethers } from 'ethers';
 import fs from 'fs';
 import path from 'path';
@@ -13,6 +14,10 @@ type IGap = {
     address:string,
     balance:string
   }
+}
+
+export function isERC20Inbox(obj: any): obj is ERC20Inbox {
+  return (obj as ERC20Inbox).depositERC20 !== undefined;
 }
 
 export const readContract = () => {

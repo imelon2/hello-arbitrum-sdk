@@ -12,7 +12,7 @@ dotenv.config();
  * ts-node brdige-parse/token-deposit.ts
  */
 async function main() {
-  registerCustomNetwork();
+  await registerCustomNetwork();
   const parentProvider = new ethers.providers.JsonRpcProvider(
     process.env.PARENT_CHAIN_URL
   );

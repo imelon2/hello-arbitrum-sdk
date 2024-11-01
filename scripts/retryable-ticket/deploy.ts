@@ -9,12 +9,12 @@ import { init } from '../../common/utils';
 dotenv.config();
 
 /**
- * ts-node retryable-ticket/deploy.ts
+ * ts-node scripts/retryable-ticket/deploy.ts
  */
 async function deploy() {
   const { childSigner } = init();
 
-  registerCustomNetwork();
+  await registerCustomNetwork();
 
   const childGreeter_f = new ChildGreeter__factory(childSigner);
 
@@ -23,7 +23,7 @@ async function deploy() {
   console.log(`ChildGreeter address  : ${childGreeter.address}`);
   console.log();
 
-  const pathFile = path.join(__dirname, 'contract.json');
+  const pathFile = path.join(__dirname, 'data.json');
 
   const data = JSON.parse(fs.readFileSync(pathFile, 'utf-8'));
   data.childGreeterAddr = childGreeter.address;

@@ -2,9 +2,7 @@ import { ArbRetryableTx__factory } from '@arbitrum/sdk/dist/lib/abi/factories/Ar
 import { init } from '../../common/utils';
 import { ARB_RETRYABLE_TX_ADDRESS } from '@arbitrum/sdk/dist/lib/dataEntities/constants';
 import { getRetryableEscrowAddress } from './common';
-import { BigNumber } from 'ethers';
 import { logGapBalance, logTransactionGap } from '../../common/logs';
-import { ChildTransactionReceipt, ParentTransactionReceipt } from '@arbitrum/sdk';
 
 /**
  * ts-node scripts/retryable-ticket/redeem-ticket.ts
@@ -12,13 +10,8 @@ import { ChildTransactionReceipt, ParentTransactionReceipt } from '@arbitrum/sdk
 async function redeem() {
   const { childSigner, childProvider,parentProvider,parentSigner } = init();
 
-  const retryableId = '0x253e68e316cc54d2d87f329b9c2ca21d771cf0a0bbacb388e7384bff5e567a2e';
+  const retryableId = '0xf4bad0ea8de78e34a3a01128669741e8d007dab0b45b01806f216443930eace7';
   const arbRetryableTx = ArbRetryableTx__factory.connect(ARB_RETRYABLE_TX_ADDRESS, childSigner);
-  const lifetime = await arbRetryableTx.getLifetime()
-  console.log("lifetime : ",lifetime);
-  
-  const timeout = await arbRetryableTx.getTimeout(retryableId)
-  console.log("timeout: ",timeout);
   
   const callValueRefundAddress = await arbRetryableTx.getBeneficiary(retryableId);
   const escrowAddress = getRetryableEscrowAddress(retryableId);
@@ -28,13 +21,13 @@ async function redeem() {
   
   const redeemRes = await arbRetryableTx.redeem(retryableId, { gasLimit: 580000 });
   const receipt = await redeemRes.wait();
+  logTransactionGap(receipt)
   
   const afterRefundKda = await childProvider.getBalance(callValueRefundAddress);
   const afterEscrow = await childProvider.getBalance(escrowAddress);
 
-  logTransactionGap(receipt)
   logGapBalance('Escrow', escrowAddress, beforeEscrow, afterEscrow, 'DKA');
-  logGapBalance('CallValueRefund', callValueRefundAddress, beforeRefundKda, afterRefundKda, 'DKA');
+  // logGapBalance('CallValueRefund', callValueRefundAddress, beforeRefundKda, afterRefundKda, 'DKA');
 }
 
 (async () => {
