@@ -25,7 +25,7 @@ async function main() {
       data: calldata,
       to: ARB_SYS_ADDRESS,
       value: parseEther('0.01'),
-      gasPrice:parseUnits("0.1",9)
+      gasPrice:parseUnits("0.1",9),
     },
     childSigner
   );

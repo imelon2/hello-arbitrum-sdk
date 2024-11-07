@@ -22,7 +22,7 @@ async function main() {
   const sequencerInbox = SequencerInbox__factory.connect(network.ethBridge.sequencerInbox, parentSigner);
   const arbProvider = new ArbitrumProvider(parentProvider);
 
-  const depositTxHash = '0xa2586cc01c2c991639a0f7f606aa91c428e3fb121cc0381cc88fc80290c8198e';
+  const depositTxHash = '0x41355ecb940b4ca353a5924838007f1d96590ece33d03df84d4a3fdb8ef767d9';
   const receipt = await arbProvider.getTransactionReceipt(depositTxHash);
 
   // 부모체인의 입금 메시지 정보를 얻습니다.

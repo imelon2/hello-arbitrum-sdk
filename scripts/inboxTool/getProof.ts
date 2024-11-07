@@ -16,7 +16,7 @@ async function main() {
       process.env.CHILD_CHAIN_URL
     );
     const withdrawTxHash =
-    "0xa4d754acb513d66f2b7261c0f51a868d6346f6aab59a2db7596be0418d2e88d4";
+    "0x8d6fa7ecb5ada52289742c92296ed1a34b4a88db94fe32bd047d497cd09b12b4";
     const receipt = await childProvider.getTransactionReceipt(withdrawTxHash);
 
     const withdrawtMessage = new ChildTransactionReceipt(receipt);
