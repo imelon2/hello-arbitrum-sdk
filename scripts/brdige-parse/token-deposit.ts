@@ -95,6 +95,15 @@ async function main() {
           )
 
           // DepositFinalized 이벤트가 없으면 ERC20 입금 트랜잭션x
+          /**
+           * @description DepositFinalized 이벤트가 없으면 ERC20 입금 트랜잭션x
+           * @example
+           * transactionHash: 0x1490671fc607eb07b51116849e5011cb75f0050efd4d6876816a9a66d4b64109
+           * from: 0x0e0116dF0180f3800900019c06A9D7698670C574
+           * to: 0x0e0116dF0180f3800900019c06A9D7698670C574
+           * amount: 10000000000000000
+           * l1Token: 0xCDb82D5e753038d9B9F8Cb154C8c8FF69E96aeb0
+           */
           event.map(e => {
             console.log(`transactionHash: ${e.transactionHash}`);
             console.log(`from: ${e.event._from}`);
