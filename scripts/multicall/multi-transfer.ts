@@ -21,7 +21,6 @@ async function main() {
     })
 
     const call3Values:Multicall3.Call3ValueStruct[] = target.map((account,i) => {
-        logProgress(i,accountCount,"create Call3Value")
         return {
             target:account,
             allowFailure:true,

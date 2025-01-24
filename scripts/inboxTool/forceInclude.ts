@@ -1,15 +1,8 @@
-import { ArbitrumProvider, getArbitrumNetwork, InboxTools, ParentEthDepositTransactionReceipt } from '@arbitrum/sdk';
-import { Bridge__factory } from '@arbitrum/sdk/dist/lib/abi/factories/Bridge__factory';
+import { ArbitrumProvider, getArbitrumNetwork, ParentEthDepositTransactionReceipt } from '@arbitrum/sdk';
 import { SequencerInbox__factory } from '@arbitrum/sdk/dist/lib/abi/factories/SequencerInbox__factory';
 import { init } from '../../common/utils';
 import { registerCustomNetwork } from '../../network/register';
 
-import { MessageDeliveredEvent } from '@arbitrum/sdk/dist/lib/abi/ERC20Bridge';
-import { EventFetcher, FetchedEvent } from '@arbitrum/sdk/dist/lib/utils/eventFetcher';
-
-type ForceInclusionParams = FetchedEvent<MessageDeliveredEvent> & {
-  delayedAcc: string;
-};
 
 /**
  * ts-node scripts/inboxTool/forceInclude.ts
@@ -22,7 +15,7 @@ async function main() {
   const sequencerInbox = SequencerInbox__factory.connect(network.ethBridge.sequencerInbox, parentSigner);
   const arbProvider = new ArbitrumProvider(parentProvider);
 
-  const depositTxHash = '0x41355ecb940b4ca353a5924838007f1d96590ece33d03df84d4a3fdb8ef767d9';
+  const depositTxHash = '0x44ef19339da128f1327c00a6b842e604688e489f9d466e00e06f2a73a80f5884';
   const receipt = await arbProvider.getTransactionReceipt(depositTxHash);
 
   // 부모체인의 입금 메시지 정보를 얻습니다.

@@ -1,8 +1,8 @@
 import { ethers } from "ethers";
 import * as path from 'path';
 import { init } from "../../common/utils";
-import { parseEther } from "ethers/lib/utils";
-import { MULTICALL_ADDRESS, MULTICALL_SIGNED_TX } from "./constants";
+import { parseEther, parseTransaction } from "ethers/lib/utils";
+import { MULTICALL_ADDRESS, MULTICALL_DEPLOYER, MULTICALL_SIGNED_TX } from "./constants";
 import { glob, runTypeChain } from 'typechain';
 
 /**
@@ -13,7 +13,7 @@ async function main() {
     const codeAt = await childProvider.getCode(MULTICALL_ADDRESS)
     if(codeAt == "0x") {
         const sendFee = await childSigner.sendTransaction({
-            to:"0x05f32B3cC3888453ff71B01135B34FF8e41263F2",
+            to:MULTICALL_DEPLOYER,
             value:parseEther('0.1')
         })
         await sendFee.wait()

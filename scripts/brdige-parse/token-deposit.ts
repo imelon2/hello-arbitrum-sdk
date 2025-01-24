@@ -1,10 +1,8 @@
-import {
-  ParentToChildMessageStatus,
-  ParentTransactionReceipt,
-} from "@arbitrum/sdk";
-import { ethers } from "ethers";
+import { ChildTransactionReceipt, EventFetcher, ParentToChildMessageStatus, ParentTransactionReceipt } from '@arbitrum/sdk';
+import { L2ArbitrumGateway__factory } from '@arbitrum/sdk/dist/lib/abi/factories/L2ArbitrumGateway__factory';
+import { ethers } from 'ethers';
 import dotenv from 'dotenv';
-import { registerCustomNetwork } from "../../network/register";
+import { registerCustomNetwork } from '../../network/register';
 dotenv.config();
 
 /**
@@ -13,15 +11,10 @@ dotenv.config();
  */
 async function main() {
   await registerCustomNetwork();
-  const parentProvider = new ethers.providers.JsonRpcProvider(
-    process.env.PARENT_CHAIN_URL
-  );
-  const childProvider = new ethers.providers.JsonRpcProvider(
-    process.env.CHILD_CHAIN_URL
-  );
+  const parentProvider = new ethers.providers.JsonRpcProvider(process.env.PARENT_CHAIN_URL);
+  const childProvider = new ethers.providers.JsonRpcProvider(process.env.CHILD_CHAIN_URL);
 
-  const depositTxHash =
-    "0xc7b06ddd46d59f4cdd4e956cfacd68744d41d9a1dcc4f99756647e496ead7184";
+  const depositTxHash = '0xf07ce71c937925fab13177321fe0b021c740b2c6d18855f499977979364ee92d';
   const receipt = await parentProvider.getTransactionReceipt(depositTxHash);
 
   // 부모체인의 입금 메시지 정보를 얻습니다.
@@ -39,16 +32,7 @@ async function main() {
   console.log();
 
   for (let i = 0; i < deliverdEvent.length; i++) {
-    const {
-      messageDataHash,
-      messageIndex,
-      beforeInboxAcc,
-      baseFeeL1,
-      inbox,
-      kind,
-      sender,
-      timestamp,
-    } = deliverdEvent[i];
+    const { messageDataHash, messageIndex, beforeInboxAcc, baseFeeL1, inbox, kind, sender, timestamp } = deliverdEvent[i];
     console.log(`  # Deliverd Event ${i}`);
     console.log(`  - messageIndex : ${messageIndex}`);
     console.log(`  - beforeInboxAcc : ${beforeInboxAcc}`);
@@ -62,8 +46,7 @@ async function main() {
   console.log();
 
   for (let i = 0; i < tokenDepositEvent.length; i++) {
-    const { l1Token, _from, _to, _sequenceNumber, _amount } =
-      tokenDepositEvent[i];
+    const { l1Token, _from, _to, _sequenceNumber, _amount } = tokenDepositEvent[i];
     console.log(`  # Token Deposit Event ${i}`);
     console.log(`  - sequenceNumber : ${_sequenceNumber}`);
     console.log(`  - l1Token : ${l1Token}`);
@@ -74,34 +57,56 @@ async function main() {
   console.log();
 
   // 자식체인의 입금 메시지 정보를 얻습니다.
-  const childDepositMessages = await depositMessage.getParentToChildMessages(
-    childProvider
-  );
+  const childDepositMessages = await depositMessage.getParentToChildMessages(childProvider);
+  console.log(`  # Child Chain Token Deposit Result`);
   for (let i = 0; i < childDepositMessages.length; i++) {
-    const retryableCreationReceipt = await childDepositMessages[
-      i
-    ].getRetryableCreationReceipt();
-    const redeem = await childDepositMessages[i].getSuccessfulRedeem();
-
+    const retryableCreationReceipt = await childDepositMessages[i].getRetryableCreationReceipt();
     console.log(`  # Child Chain Token Deposit Result ${i}`);
     console.log(`  -  hash: ${retryableCreationReceipt?.transactionHash}`);
-
     const childTransactionStatus = await childDepositMessages[i].status();
     switch (childTransactionStatus) {
       case ParentToChildMessageStatus.NOT_YET_CREATED:
-        console.log("  - status : NOT_YET_CREATED");
+        console.log('  - status : NOT_YET_CREATED');
         break;
       case ParentToChildMessageStatus.CREATION_FAILED:
-        console.log("  - status : CREATION_FAILED");
+        console.log('  - status : CREATION_FAILED');
         break;
       case ParentToChildMessageStatus.FUNDS_DEPOSITED_ON_CHILD:
-        console.log("  - status : FUNDS_DEPOSITED_ON_CHILD");
+        console.log('  - status : FUNDS_DEPOSITED_ON_CHILD');
         break;
       case ParentToChildMessageStatus.REDEEMED:
-        console.log("  - status : REDEEMED");
+        console.log('  - status : REDEEMED');
+
+
+        const redeem = await childDepositMessages[i].getSuccessfulRedeem()
+        if(redeem.status == ParentToChildMessageStatus.REDEEMED) {
+          // redeem 트랜잭션 receipt
+          const childTxReceipt = redeem.childTxReceipt
+
+          // event 파싱 클래스 생성
+          const eventFetcher = new EventFetcher(childProvider)
+
+          // 이벤트 파싱
+          const event = await eventFetcher.getEvents(
+            L2ArbitrumGateway__factory,
+            contract => 
+              contract.filters['DepositFinalized(address,address,address,uint256)'](), // DepositFinalized 이벤트 조회
+            {fromBlock:childTxReceipt.blockNumber,toBlock:childTxReceipt.blockNumber,address:childTxReceipt.to}
+          )
+
+          // DepositFinalized 이벤트가 없으면 ERC20 입금 트랜잭션x
+          event.map(e => {
+            console.log(`transactionHash: ${e.transactionHash}`);
+            console.log(`from: ${e.event._from}`);
+            console.log(`to: ${e.event._to}`);
+            console.log(`amount: ${e.event._amount}`);
+            console.log(`l1Token: ${e.event.l1Token}`);
+          })
+        }
+        
         break;
-      case ParentToChildMessageStatus.EXPIRED:
-        console.log("  - status : EXPIRED");
+        case ParentToChildMessageStatus.EXPIRED:
+        console.log('  - status : EXPIRED');
         break;
     }
   }

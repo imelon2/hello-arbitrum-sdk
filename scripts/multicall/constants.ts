@@ -1,5 +1,6 @@
 // https://github.com/mds1/multicall
 export const MULTICALL_ADDRESS = '0xcA11bde05977b3631167028862bE2a173976CA11';
+export const MULTICALL_DEPLOYER = '0x05f32B3cC3888453ff71B01135B34FF8e41263F2';
 
 export const MULTICALL_ABI_ETHERS = [
     'function aggregate(tuple(address target, bytes callData)[] calls) payable returns (uint256 blockNumber, bytes[] returnData)',
